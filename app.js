@@ -60,7 +60,7 @@ app.post('/login', (req, res) => {
             activeUsers[result[0].userID] = req.socket.remoteAddress;
             var travel;
             if(result[0].userID == 1) {
-                travel = '/control';
+                travel = '/control/' + result[0].userID;
             }
             else {
                 travel = '/profile/' + result[0].userID;
@@ -477,7 +477,12 @@ app.get('/logout/:id', (req, res) => {
 })
 
 
-app.get('/control', (req, res) => {
+app.get('/control/:id', (req, res) => {
+    var key = req.params.id;
+    if(key !== '1') {
+        return res.redirect('/login');
+    }
+
     find = "SELECT * from Stocks;";
 
     dbms.query(find, (err, result, fields) => {
@@ -488,7 +493,12 @@ app.get('/control', (req, res) => {
 })
 
 
-app.get('/update', (req, res) => {
+app.get('/update/:id', (req, res) => {
+    var key = req.params.id;
+    if(key !== '1') {
+        return res.redirect('/login');
+    }
+
     find = "SELECT * from Stocks;";
 
     dbms.query(find, (err, result, fields) => {
@@ -499,7 +509,7 @@ app.get('/update', (req, res) => {
 })
 
 
-app.post('/update', (req, res) => {
+app.post('/update/:id', (req, res) => {
     var inc = req.body.chosenStockName;
     var value = parseInt(req.body.sharePrice);
 
@@ -527,12 +537,17 @@ app.post('/update', (req, res) => {
 })
 
 
-app.get('/add', (req, res) => {
+app.get('/add/:id', (req, res) => {
+    var key = req.params.id;
+    if(key !== '1') {
+        return res.redirect('/login');
+    }
+
     res.render('add');
 })
 
 
-app.post('/add', (req, res) => {
+app.post('/add/:id', (req, res) => {
     var inc = req.body.symbol;
     var sec = req.body.sector;
     var val = parseInt(req.body.shares);
